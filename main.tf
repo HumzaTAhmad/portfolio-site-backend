@@ -79,7 +79,7 @@ resource "aws_api_gateway_integration" "MyPortfolioIntegration" {
 
   type                    = "AWS_PROXY"
   integration_http_method = "PUT"
-  uri                     = aws_lambda_function.update_visits.arn # Replace with your actual backend URI, if applicable
+  uri                     = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${aws_lambda_function.update_visits.arn}/invocations"
 }
 
 resource "aws_api_gateway_deployment" "my_api_deployment" {
