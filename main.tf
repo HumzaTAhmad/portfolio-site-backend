@@ -80,7 +80,7 @@ resource "aws_api_gateway_integration" "MyPortfolioIntegration" {
   resource_id = aws_api_gateway_rest_api.MyPortfolioAPI.root_resource_id
   http_method = aws_api_gateway_method.MyPortfolioMethod.http_method
 
-  type                    = "AWS_PROXY"
+  type                    = "AWS"
   integration_http_method = "PUT"
   uri                     = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${aws_lambda_function.update_visits.arn}/invocations"
 }
