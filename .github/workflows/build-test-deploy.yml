@@ -12,11 +12,26 @@ jobs:
       - name: Zip the Lambda function
         run: zip lambda_update_visits.zip lambda_update_visits.py
       
+      - name: Upload Lambda ZIP to Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: lambda_function_zip
+          path: lambda_update_visits.zip
+            
 
   deploy-step:
     needs: build-step
     runs-on: ubuntu-latest
     steps:    
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Download Lambda ZIP from Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: lambda_function_zip
+          path: .
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -34,10 +49,13 @@ jobs:
         run: terraform apply -auto-approve
   
   test-step:
-    needs: build-step
+    needs: deploy-step
     runs-on: ubuntu-latest
     steps:
 
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
