@@ -57,19 +57,10 @@ resource "aws_lambda_function" "update_visits" {
   }
 }
 
-resource "aws_lambda_permission" "api_gateway" {
-  statement_id  = "AllowExecutionFromAPIGateway"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.update_visits.function_name
-  principal     = "apigateway.amazonaws.com"
-  // Ensure that the source ARN matches your API Gateway execution ARN
-  source_arn    = "${aws_api_gateway_rest_api.MyPortfolioAPI.execution_arn}/PUT"
-}
-
 #----------------------------------API GATEWAY------------------------------------------
 
 resource "aws_api_gateway_rest_api" "MyPortfolioAPI" {
-  name        = "humza-resume-api3"
+  name        = "humza-resume-api"
   description = "This is a sample API"
 
   endpoint_configuration {
