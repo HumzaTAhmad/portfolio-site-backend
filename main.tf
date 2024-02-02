@@ -39,11 +39,7 @@ resource "aws_iam_role_policy_attachment" "dynamodb_full_access_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
 }
 
-data "archive_file" "lambda" {
-  type        = "zip"
-  source_file = "lambda_update_visits.py"
-  output_path = "lambda_update_visits.zip"
-}
+
 
 resource "aws_lambda_function" "update_visits" {
   # If the file is not in the current working directory you will need to include a
@@ -52,9 +48,6 @@ resource "aws_lambda_function" "update_visits" {
   function_name = "update_visits"
   role          = aws_iam_role.dynamo_full_access_2.arn
   handler       = "lambda_update_visits.lambda_handler"
-
-  source_code_hash = data.archive_file.lambda.output_base64sha256
-
   runtime = "python3.12"
 
   environment {

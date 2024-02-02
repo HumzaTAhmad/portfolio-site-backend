@@ -1,0 +1,54 @@
+name: build, test, deploy infrastructure in AWS
+
+on: [push]
+
+jobs:
+  build-step:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      
+      - name: Zip the Lambda function
+        run: zip lambda_update_visits.zip lambda_update_visits.py
+      
+
+  deploy-step:
+    needs: build-step
+    runs-on: ubuntu-latest
+    steps:    
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Terraform Init
+        run: terraform init
+      
+      - name: Terraform Plan
+        run: terraform plan
+      
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+  
+  test-step:
+    needs: build-step
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+      
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run Cypress tests
+        run: npx cypress run
+      
+
+
+      
