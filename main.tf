@@ -45,7 +45,7 @@ resource "aws_lambda_function" "update_visits" {
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
   filename      = "lambda_update_visits.zip"
-  function_name = "update_visits"
+  function_name = "update_visits2"
   role          = aws_iam_role.dynamo_full_access_2.arn
   handler       = "lambda_update_visits.lambda_handler"
   runtime = "python3.12"
@@ -61,7 +61,7 @@ resource "aws_lambda_function" "update_visits" {
 #----------------------------------API GATEWAY------------------------------------------
 
 resource "aws_api_gateway_rest_api" "MyPortfolioAPI" {
-  name        = "humza-resume-api"
+  name        = "humza-resume-api2"
   description = "This is a sample API"
 }
 
@@ -107,7 +107,7 @@ resource "aws_api_gateway_deployment" "my_api_deployment" {
 
 #------------------------------DynamoDB---------------------------------------------
 resource "aws_dynamodb_table" "db_visit_count" {
-  name           = "db_visit_count"
+  name           = "db_visit_count2"
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5

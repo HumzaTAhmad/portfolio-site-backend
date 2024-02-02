@@ -19,7 +19,7 @@ jobs:
           path: lambda_update_visits.zip
             
 
-  deploy-step:
+  build-aws-step:
     needs: build-step
     runs-on: ubuntu-latest
     steps:    
@@ -49,7 +49,7 @@ jobs:
         run: terraform apply -auto-approve
   
   test-step:
-    needs: deploy-step
+    needs: build-aws-step
     runs-on: ubuntu-latest
     steps:
 
