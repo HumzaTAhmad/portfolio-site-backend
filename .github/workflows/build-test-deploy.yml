@@ -53,6 +53,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Adjust Cypress permissions
+        run: chmod +x $(npm bin)/cypress
+
       - name: Checkout Code
         uses: actions/checkout@v2
         
