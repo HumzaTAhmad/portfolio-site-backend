@@ -117,7 +117,7 @@ resource "aws_api_gateway_integration_response" "MyPortfolioOptionsIntegrationRe
 
   response_parameters = {
     "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,PUT'",
+    "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS'",
     "method.response.header.Access-Control-Allow-Origin" = "'*'"
   }
 }
@@ -160,7 +160,7 @@ resource "aws_api_gateway_deployment" "my_api_deployment" {
 
 #------------------------------DynamoDB---------------------------------------------
 resource "aws_dynamodb_table" "db_visit_count" {
-  name           = "db_visit_count2"
+  name           = "db_visit_count"
   billing_mode   = "PROVISIONED"
   read_capacity  = 5
   write_capacity = 5
