@@ -63,7 +63,7 @@ resource "aws_lambda_permission" "api_gateway" {
   function_name = aws_lambda_function.update_visits.function_name
   principal     = "apigateway.amazonaws.com"
   // Ensure that the source ARN matches your API Gateway execution ARN
-  source_arn    = "${aws_api_gateway_rest_api.MyPortfolioAPI.execution_arn}/*/*/PUT"
+  source_arn    = "${aws_api_gateway_rest_api.MyPortfolioAPI.execution_arn}/PUT"
 }
 
 #----------------------------------API GATEWAY------------------------------------------
