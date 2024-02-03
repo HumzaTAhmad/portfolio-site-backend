@@ -122,7 +122,10 @@ resource "aws_api_gateway_integration_response" "MyDemoIntegrationResponse" {
   status_code = aws_api_gateway_method_response.response_200.status_code
 
   response_templates = {
-    "application/json" = "",
+    "application/json" = ""
+  }
+
+  response_parameters = {
     "method.response.header.Access-Control-Allow-Origin" = "'*'"
   }
 }
