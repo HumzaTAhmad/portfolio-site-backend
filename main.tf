@@ -57,6 +57,19 @@ resource "aws_lambda_function" "update_visits" {
   }
 }
 
+resource "aws_lambda_permission" "api_gateway" {
+  statement_id  = "AllowExecutionFromAPIGateway"
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.update_visits.function_name
+  principal     = "apigateway.amazonaws.com"
+
+  // The source ARN is the ARN of the API Gateway method/execution that will invoke the Lambda function.
+  // In this case, it's constructed from the rest_api_id and the resource's path.
+  // You may need to adjust the source_arn to match the path of your specific method.
+  // Make sure to use stage variables or a specific stage if necessary.
+  source_arn = "${aws_api_gateway_rest_api.MyPortfolioAPI.execution_arn}/*/*"
+}
+
 #----------------------------------API GATEWAY------------------------------------------
 
 resource "aws_api_gateway_rest_api" "MyPortfolioAPI" {
@@ -112,8 +125,6 @@ resource "aws_api_gateway_integration_response" "MyDemoIntegrationResponse" {
     "application/json" = ""
   }
 }
-
-
 
 
 resource "aws_api_gateway_deployment" "my_api_deployment" {
