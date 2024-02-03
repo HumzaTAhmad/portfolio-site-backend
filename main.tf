@@ -89,6 +89,10 @@ resource "aws_api_gateway_method" "MyPortfolioMethod" {
 }
 
 resource "aws_api_gateway_method_response" "response_200" {
+  depends_on = [
+        aws_api_gateway_method.MyPortfolioMethod
+  ]
+    
   rest_api_id = aws_api_gateway_rest_api.MyPortfolioAPI.id
   resource_id = aws_api_gateway_rest_api.MyPortfolioAPI.root_resource_id
   http_method = aws_api_gateway_method.MyPortfolioMethod.http_method
@@ -96,6 +100,10 @@ resource "aws_api_gateway_method_response" "response_200" {
 
   response_models = {
     "application/json" = "Empty"
+  }
+
+  response_parameters = {
+    "method.response.header.Access-Control-Allow-Headers" = true
   }
 }
 
@@ -111,8 +119,7 @@ resource "aws_api_gateway_integration" "MyPortfolioIntegration" {
 
 resource "aws_api_gateway_integration_response" "MyDemoIntegrationResponse" {
     depends_on = [
-        aws_api_gateway_integration.MyPortfolioIntegration,
-        aws_api_gateway_method_response.response_200
+        aws_api_gateway_integration.MyPortfolioIntegration
     ]
 
 
