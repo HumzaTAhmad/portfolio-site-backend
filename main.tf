@@ -122,7 +122,8 @@ resource "aws_api_gateway_integration_response" "MyDemoIntegrationResponse" {
   status_code = aws_api_gateway_method_response.response_200.status_code
 
   response_templates = {
-    "application/json" = ""
+    "application/json" = "",
+    "method.response.header.Access-Control-Allow-Origin" = "'*'"
   }
 }
 
@@ -161,7 +162,6 @@ resource "aws_api_gateway_integration" "MyPortfolioOptionsIntegration" {
   type = "MOCK"
 
   request_templates = {
-    "method.response.header.Access-Control-Allow-Origin" = "'*'",
     "application/json" = "{ \"statusCode\": 200 }"
   }
 }
@@ -169,7 +169,7 @@ resource "aws_api_gateway_integration" "MyPortfolioOptionsIntegration" {
 
 resource "aws_api_gateway_integration_response" "MyPortfolioOptionsIntegrationResponse" {
   depends_on = [ aws_api_gateway_integration.MyPortfolioOptionsIntegration ]
-  
+
   rest_api_id = aws_api_gateway_rest_api.MyPortfolioAPI.id
   resource_id = aws_api_gateway_rest_api.MyPortfolioAPI.root_resource_id
   http_method = aws_api_gateway_method.MyPortfolioOptions.http_method
