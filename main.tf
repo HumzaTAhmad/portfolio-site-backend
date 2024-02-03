@@ -171,7 +171,7 @@ resource "aws_api_gateway_integration" "MyPortfolioOptionsIntegration" {
   type = "MOCK"
 
   request_templates = {
-    "method.response.header.Access-Control-Allow-Origin" = "'*'"
+    "method.response.header.Access-Control-Allow-Origin" = "'*'",
     "application/json" = "{ \"statusCode\": 200 }"
   }
 }
