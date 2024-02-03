@@ -45,7 +45,7 @@ resource "aws_lambda_function" "update_visits" {
   # If the file is not in the current working directory you will need to include a
   # path.module in the filename.
   filename      = "lambda_update_visits.zip"
-  function_name = "update_visits2"
+  function_name = "update_visits"
   role          = aws_iam_role.dynamo_full_access_2.arn
   handler       = "lambda_update_visits.lambda_handler"
   runtime = "python3.12"
@@ -172,7 +172,7 @@ resource "aws_dynamodb_table_item" "add_visit_entry" {
   item = <<ITEM
 {
   "ref_id": {"N": "100"},
-  "visits": {"N": "0"}
+  "visits": {"N": ""}
 }
 ITEM
 }
