@@ -164,15 +164,3 @@ resource "aws_dynamodb_table" "db_visit_count" {
     type = "N"
   }
 }
-
-resource "aws_dynamodb_table_item" "add_visit_entry" {
-  table_name = aws_dynamodb_table.db_visit_count.name
-  hash_key   = aws_dynamodb_table.db_visit_count.hash_key
-
-  item = <<ITEM
-{
-  "ref_id": {"N": "100"},
-  "visits": {"N": ""}
-}
-ITEM
-}
