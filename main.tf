@@ -75,6 +75,13 @@ resource "aws_api_gateway_method" "MyPortfolioMethod" {
   authorization = "NONE"
 }
 
+resource "aws_api_gateway_method_response" "response_200" {
+  rest_api_id = aws_api_gateway_rest_api.MyPortfolioAPI.id
+  resource_id = aws_api_gateway_rest_api.MyPortfolioAPI.root_resource_id
+  http_method = aws_api_gateway_method.MyPortfolioMethod.http_method
+  status_code = "200"
+}
+
 resource "aws_api_gateway_integration" "MyPortfolioIntegration" {
   rest_api_id = aws_api_gateway_rest_api.MyPortfolioAPI.id
   resource_id = aws_api_gateway_rest_api.MyPortfolioAPI.root_resource_id
@@ -83,6 +90,13 @@ resource "aws_api_gateway_integration" "MyPortfolioIntegration" {
   type                    = "AWS"
   integration_http_method = "POST"
   uri                     = "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/${aws_lambda_function.update_visits.arn}/invocations"
+}
+
+resource "aws_api_gateway_integration_response" "MyDemoIntegrationResponse" {
+  rest_api_id = aws_api_gateway_rest_api.MyPortfolioAPI.id
+  resource_id = aws_api_gateway_rest_api.MyPortfolioAPI.root_resource_id
+  http_method = aws_api_gateway_method.MyPortfolioMethod.http_method
+  status_code = aws_api_gateway_method_response.response_200.status_code
 }
 
 
