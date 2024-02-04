@@ -106,6 +106,8 @@ jobs:
   build-prod:
     needs: test-dev
     runs-on: ubuntu-latest
+    environment:  # Define the environment that requires a manual approval.
+      name: prod
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
