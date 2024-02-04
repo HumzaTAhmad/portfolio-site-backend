@@ -47,7 +47,9 @@ jobs:
           aws-region: us-east-1
       
       - name: Terraform Init
-        run: terraform init
+        run: |
+          export TF_LOG=DEBUG
+          terraform init
 
       - name: Terraform Refresh
         run: terraform refresh
