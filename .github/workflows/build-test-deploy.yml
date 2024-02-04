@@ -44,7 +44,6 @@ jobs:
       
       - name: Terraform Init
         run: |
-          export TF_LOG=DEBUG
           terraform init
 
       - name: Terraform Refresh
