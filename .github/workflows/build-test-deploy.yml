@@ -97,6 +97,9 @@ jobs:
           echo "API_GATEWAY_URL=$(echo $API_GATEWAY_URL | base64 --decode)" >> $GITHUB_ENV
           npx cypress run
       
+      - name: Terraform Init
+        run: terraform init
+  
       - name: Terraform destroy
         run: terraform destroy
 
@@ -175,6 +178,7 @@ jobs:
       
       - name: Install dependencies
         run: npm install
+      
         
       - name: Install cypress
         run: npm install -g cypress 
