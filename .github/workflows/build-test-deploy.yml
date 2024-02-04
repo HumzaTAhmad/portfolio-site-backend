@@ -98,6 +98,9 @@ jobs:
       - name: Unzip the API Gateway URL file
         run: |
           unzip artifact/api_gateway_url.zip -d artifact
+        
+      - name: Print API Gateway URL
+        run: cat artifact/api_gateway_url.txt
       
       - name: Set API Gateway URL as Environment Variable
         run: |
