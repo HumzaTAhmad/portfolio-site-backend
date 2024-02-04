@@ -99,10 +99,10 @@ jobs:
         run: |
           unzip artifact/api_gateway_url.zip -d artifact
       
-      - name: Read API Gateway URL and Set as ENV
+      - name: Set API Gateway URL as Environment Variable
         run: |
-          API_GATEWAY_URL=$(cat artifact/api_gateway_url.txt)
-          echo "API_GATEWAY_URL=$API_GATEWAY_URL" >> $GITHUB_ENV
+          echo "API_GATEWAY_URL=$(cat artifact/api_gateway_url.txt)" >> $GITHUB_ENV
+        
         
       - name: Setup Node.js
         uses: actions/setup-node@v2
