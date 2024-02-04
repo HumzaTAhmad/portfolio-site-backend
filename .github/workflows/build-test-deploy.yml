@@ -22,8 +22,6 @@ jobs:
   build-dev-aws:
     needs:  build-dev
     runs-on: ubuntu-latest
-    outputs:
-      api_gateway_url: ${{ steps.set_output.outputs.api_gateway_url }}
     steps:    
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -60,10 +58,20 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
       
-      - name: Set API Gateway URL
+      - name: Write API Gateway URL to File
         run: |
-          API_GATEWAY_URL=$(terraform output -raw api_gateway_stage_url)
-          echo "API_GATEWAY_URL=$API_GATEWAY_URL" >> $GITHUB_ENV
+          terraform output -raw api_gateway_stage_url > api_gateway_url.txt
+      
+      - name: Zip the API Gateway URL file
+        run: |
+          zip api_gateway_url.zip api_gateway_url.txt
+      
+      - name: Upload API Gateway URL as Artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: api-gateway-url
+          path: api_gateway_url.zip
+      
       
         
       
@@ -80,6 +88,21 @@ jobs:
         uses: hashicorp/setup-terraform@v1
         with:
           cli_config_credentials_token: ${{ secrets.TF_CLOUD_API_TOKEN }}
+        
+      - name: Download API Gateway URL Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: api-gateway-url
+          path: artifact
+      
+      - name: Unzip the API Gateway URL file
+        run: |
+          unzip artifact/api_gateway_url.zip -d artifact
+      
+      - name: Read API Gateway URL and Set as ENV
+        run: |
+          API_GATEWAY_URL=$(cat artifact/api_gateway_url.txt)
+          echo "API_GATEWAY_URL=$API_GATEWAY_URL" >> $GITHUB_ENV
         
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -102,7 +125,7 @@ jobs:
       - name: Run Cypress tests
         run: npx cypress run
         env:
-          API_GATEWAY_URL: ${{ needs.build-dev-aws.outputs.api_gateway_url }}
+          API_GATEWAY_URL: ${{ env.API_GATEWAY_URL }}
       
       - name: Terraform destroy
         run: terraform destroy
