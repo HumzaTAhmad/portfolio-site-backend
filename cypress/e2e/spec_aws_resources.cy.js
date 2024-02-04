@@ -2,7 +2,7 @@
 
 describe('Lambda Function Test', () => {
   it('increments the visit counter', () => {
-    const url = 'https://5ykalw7bz6.execute-api.us-east-1.amazonaws.com/v1';
+    const url = 'https://lxxfx53clc.execute-api.us-east-1.amazonaws.com/v1';
 
     // First PUT request
     cy.request('PUT', url).then((response1) => {
