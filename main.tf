@@ -5,7 +5,7 @@ provider "aws" {
 #--------------------------------STATE FILE------------------------------------------
 terraform {
   backend "s3" {
-    bucket = "portfolio-terrform-state"
+    bucket = "my-portfolio-terrform-state"
     key    = "backend/terraform.tfstate"
     region = "us-east-1"
   }

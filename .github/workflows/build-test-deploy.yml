@@ -34,15 +34,22 @@ jobs:
           name: lambda_function_zip
           path: .
 
-      - name: Configure AWS Credentials
+      - name: Configure AWS Credentials for terraform prod state file
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Terraform Init
+        run: terraform init
+      
+      - name: Configure AWS Credentials for terraform dev env
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
-      
-      - name: Terraform Init
-        run: terraform init
 
       - name: Terraform Refresh
         run: terraform refresh
