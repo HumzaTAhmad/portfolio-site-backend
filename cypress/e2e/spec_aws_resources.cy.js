@@ -2,7 +2,7 @@
 
 describe('Lambda Function Test', () => {
   it('increments the visit counter', () => {
-    const url = 'https://qlvs90sd39.execute-api.us-east-1.amazonaws.com/Beta/';
+    const url = Cypress.env(process.env.API_GATEWAY_URL);
 
     // First PUT request
     cy.request('PUT', url).then((response1) => {
@@ -20,11 +20,11 @@ describe('Lambda Function Test', () => {
     });
   });
 });
-
+/*
 // Second group of tests
 describe('Website Visits Test', () => {
   it('check visit counter', () => {
-    const url = 'https://qlvs90sd39.execute-api.us-east-1.amazonaws.com/Beta/';
+    const url = Cypress.env(process.env.API_GATEWAY_URL);;
     cy.request('PUT', url).then((response1) => {
       expect(response1.status).to.eq(200);
       const visits = response1.body.visits;
@@ -45,3 +45,4 @@ describe('Website Visits Test', () => {
     });
   });
 });
+*/

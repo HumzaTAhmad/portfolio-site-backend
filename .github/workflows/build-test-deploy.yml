@@ -3,7 +3,7 @@ name: build, test, deploy infrastructure in AWS
 on: [push]
 
 jobs:
-  build-step:
+  build-dev:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -19,9 +19,103 @@ jobs:
           path: lambda_update_visits.zip
             
 
-  build-aws-step:
-    needs: build-step
+  build-dev-aws:
+    needs:  build-dev
     runs-on: ubuntu-latest
+    outputs:
+      api_gateway_url: ${{ steps.set_output.outputs.api_gateway_url }}
+    steps:    
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Download Lambda ZIP from Artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: lambda_function_zip
+          path: .
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Refresh
+        run: terraform refresh
+      
+      - name: Terraform Plan
+        run: terraform plan
+      
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+      
+      - name: Get API Gateway URL
+        id: get_url
+        run: echo "API_GATEWAY_URL=$(terraform output -raw api_gateway_stage_url)" >> $GITHUB_ENV
+
+      - name: Set output
+        id: set_output
+        run: echo "::set-output name=api_gateway_url::$API_GATEWAY_URL"
+  
+  test-dev:
+    needs: build-dev-aws
+    runs-on: ubuntu-latest
+    steps:
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+        
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+      
+      - name: Install dependencies
+        run: npm install
+        
+      - name: Install cypress
+        run: npm install -g cypress 
+
+      - name: Run Cypress tests
+        run: npx cypress run
+        env:
+          API_GATEWAY_URL: ${{ needs.build-dev-aws.outputs.api_gateway_url }}
+      
+      - name: Terraform destroy
+        run: terraform destroy
+
+  build-prod:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+      
+      - name: Zip the Lambda function
+        run: zip lambda_update_visits.zip lambda_update_visits.py
+      
+      - name: Upload Lambda ZIP to Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: lambda_function_zip
+          path: lambda_update_visits.zip
+                    
+        
+  build-prod-aws:
+    needs:  build-dev
+    runs-on: ubuntu-latest
+    outputs:
+      api_gateway_url: ${{ steps.set_output.outputs.api_gateway_url }}
     steps:    
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -41,17 +135,29 @@ jobs:
       
       - name: Terraform Init
         run: terraform init
+
+      - name: Terraform Refresh
+        run: terraform refresh
       
       - name: Terraform Plan
         run: terraform plan
       
       - name: Terraform Apply
         run: terraform apply -auto-approve
-  
-  test-step:
-    needs: build-aws-step
+      
+      - name: Get API Gateway URL
+        id: get_url
+        run: echo "API_GATEWAY_URL=$(terraform output -raw api_gateway_stage_url)" >> $GITHUB_ENV
+
+      - name: Set output
+        id: set_output
+        run: echo "::set-output name=api_gateway_url::$API_GATEWAY_URL"
+          
+  test-prod:
+    needs: build-dev-aws
     runs-on: ubuntu-latest
     steps:
+      
 
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -69,6 +175,8 @@ jobs:
 
       - name: Run Cypress tests
         run: npx cypress run
+        env:
+          API_GATEWAY_URL: ${{ needs.build-prod-aws.outputs.api_gateway_url }}
       
 
 

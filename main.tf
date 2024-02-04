@@ -5,7 +5,7 @@ provider "aws" {
 #--------------------------------STATE FILE------------------------------------------
 terraform {
   backend "s3" {
-    bucket = "my-terraform-state-bucket-portfolio"
+    bucket = "portfolio-terrform-state"
     key    = "backend/terraform.tfstate"
     region = "us-east-1"
   }
@@ -28,14 +28,14 @@ data "aws_iam_policy_document" "lambda_assume_role_policy" {
 }
 
 # Create IAM Role with Trust Relationship for Lambda
-resource "aws_iam_role" "dynamo_full_access_2" {
-  name               = "DynamoFullAccess2"
+resource "aws_iam_role" "dynamo_full_access" {
+  name               = "DynamoFullAccess"
   assume_role_policy = data.aws_iam_policy_document.lambda_assume_role_policy.json
 }
 
 # Attach AmazonDynamoDBFullAccess Managed Policy to the Role
 resource "aws_iam_role_policy_attachment" "dynamodb_full_access_attachment" {
-  role       = aws_iam_role.dynamo_full_access_2.name
+  role       = aws_iam_role.dynamo_full_access.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
 }
 
@@ -46,7 +46,7 @@ resource "aws_lambda_function" "update_visits" {
   # path.module in the filename.
   filename      = "lambda_update_visits.zip"
   function_name = "update_visits"
-  role          = aws_iam_role.dynamo_full_access_2.arn
+  role          = aws_iam_role.dynamo_full_access.arn
   handler       = "lambda_update_visits.lambda_handler"
   runtime = "python3.12"
 
@@ -215,6 +215,10 @@ resource "aws_api_gateway_deployment" "my_api_deployment" {
   lifecycle {
     create_before_destroy = true
   }
+}
+
+output "api_gateway_stage_url" {
+  value = aws_api_gateway_deployment.my_api_deployment.invoke_url
 }
 
 #------------------------------DynamoDB---------------------------------------------
