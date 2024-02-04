@@ -60,15 +60,12 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
       
-      - name: Get API Gateway URL
-        id: get_url
+      - name: Set API Gateway URL
         run: |
-          echo "api_gateway_url=$(terraform output -raw api_gateway_stage_url)" >> $GITHUB_ENV
+          API_GATEWAY_URL=$(terraform output -raw api_gateway_stage_url)
+          echo "API_GATEWAY_URL=$API_GATEWAY_URL" >> $GITHUB_ENV
       
-      - name: Set output
-        id: set_output
-        run: |
-          echo "::set-output name=api_gateway_url::$(terraform output -raw api_gateway_stage_url)"
+        
       
   
   test-dev:
@@ -166,17 +163,16 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
       
-      - name: Get API Gateway URL
-        id: get_url
-        run: echo "api_gateway_url=$(terraform output -raw api_gateway_stage_url)" >> $GITHUB_ENV
-      
-      - name: Set output
-        id: set_output
-        run: echo "::set-output name=api_gateway_url::$(terraform output -raw api_gateway_stage_url)"
+      - name: Set API Gateway URL
+        run: |
+          API_GATEWAY_URL=$(terraform output -raw api_gateway_stage_url)
+          echo "API_GATEWAY_URL=$API_GATEWAY_URL" >> $GITHUB_ENV
           
   test-prod:
     needs: build-prod-aws
     runs-on: ubuntu-latest
+    environment:  # Define the environment that requires a manual approval.
+      name: prod
     steps:
       
 
