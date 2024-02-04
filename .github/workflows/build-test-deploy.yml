@@ -62,11 +62,13 @@ jobs:
       
       - name: Get API Gateway URL
         id: get_url
-        run: echo "api_gateway_url=$(terraform output -raw api_gateway_stage_url)" >> $GITHUB_ENV
+        run: |
+          echo "api_gateway_url=$(terraform output -raw api_gateway_stage_url)" >> $GITHUB_ENV
       
       - name: Set output
         id: set_output
-        run: echo "::set-output name=api_gateway_url::$(terraform output -raw api_gateway_stage_url)"
+        run: |
+          echo "::set-output name=api_gateway_url::$(terraform output -raw api_gateway_stage_url)"
       
   
   test-dev:
