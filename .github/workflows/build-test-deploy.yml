@@ -102,9 +102,11 @@ jobs:
       - name: Print API Gateway URL
         run: cat artifact/api_gateway_url.txt
       
-      - name: Set API Gateway URL as Environment Variable
+      - name: Encode and Set API Gateway URL as Environment Variable
         run: |
-          echo "API_GATEWAY_URL=$(cat artifact/api_gateway_url.txt)" >> $GITHUB_ENV
+          API_GATEWAY_URL=$(cat artifact/api_gateway_url.txt | base64)
+          echo "API_GATEWAY_URL=${API_GATEWAY_URL}" >> $GITHUB_ENV
+      
         
         
       - name: Setup Node.js
@@ -125,8 +127,10 @@ jobs:
       - name: Install cypress
         run: npm install -g cypress 
 
-      - name: Run Cypress tests
-        run: npx cypress run
+      - name: Decode and Run Cypress tests
+        run: |
+          echo "API_GATEWAY_URL=$(echo $API_GATEWAY_URL | base64 --decode)" >> $GITHUB_ENV
+          npx cypress run
         env:
           API_GATEWAY_URL: ${{ env.API_GATEWAY_URL }}
       
