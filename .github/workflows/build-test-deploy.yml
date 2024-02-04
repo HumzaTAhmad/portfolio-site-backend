@@ -101,7 +101,7 @@ jobs:
         run: terraform init
   
       - name: Terraform destroy
-        run: terraform destroy
+        run: terraform destroy -auto-approve
 
   build-prod:
     needs: test-dev
