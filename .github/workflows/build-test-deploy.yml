@@ -27,6 +27,11 @@ jobs:
     steps:    
       - name: Checkout Code
         uses: actions/checkout@v2
+      
+      - name: configure Terraform cloudcredentials
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_CLOUD_API_TOKEN }}
 
       - name: Download Lambda ZIP from Artifacts
         uses: actions/download-artifact@v2
@@ -34,22 +39,15 @@ jobs:
           name: lambda_function_zip
           path: .
 
-      - name: Configure AWS Credentials for terraform prod state file
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-      
-      - name: Terraform Init
-        run: terraform init
-      
-      - name: Configure AWS Credentials for terraform dev env
+      - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.TEST_AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+      
+      - name: Terraform Init
+        run: terraform init
 
       - name: Terraform Refresh
         run: terraform refresh
@@ -75,6 +73,11 @@ jobs:
 
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: configure Terraform cloudcredentials
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_CLOUD_API_TOKEN }}
         
       - name: Setup Node.js
         uses: actions/setup-node@v2
@@ -127,6 +130,11 @@ jobs:
     steps:    
       - name: Checkout Code
         uses: actions/checkout@v2
+      
+      - name: configure Terraform cloud credentials
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_CLOUD_API_TOKEN }}
 
       - name: Download Lambda ZIP from Artifacts
         uses: actions/download-artifact@v2

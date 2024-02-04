@@ -4,10 +4,12 @@ provider "aws" {
 
 #--------------------------------STATE FILE------------------------------------------
 terraform {
-  backend "s3" {
-    bucket = "my-portfolio-terraform-state"
-    key    = "backend/terraform.tfstate"
-    region = "us-east-1"
+  cloud {
+    organization = "humza3173"
+
+    workspaces {
+      name = "aws-portfolio"
+    }
   }
 }
 
