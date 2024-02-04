@@ -2,7 +2,7 @@
 
 describe('Lambda Function Test', () => {
   it('increments the visit counter', () => {
-    const url = Cypress.env(process.env.API_GATEWAY_URL);
+    const url = Cypress.env('API_GATEWAY_URL');
 
     // First PUT request
     cy.request('PUT', url).then((response1) => {
