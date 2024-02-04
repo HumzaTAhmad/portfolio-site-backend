@@ -96,6 +96,7 @@ jobs:
         run: terraform destroy
 
   build-prod:
+    needs: test-dev
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
@@ -112,7 +113,7 @@ jobs:
                     
         
   build-prod-aws:
-    needs:  build-dev
+    needs:  build-prod
     runs-on: ubuntu-latest
     outputs:
       api_gateway_url: ${{ steps.set_output.outputs.api_gateway_url }}
@@ -154,7 +155,7 @@ jobs:
         run: echo "::set-output name=api_gateway_url::$API_GATEWAY_URL"
           
   test-prod:
-    needs: build-dev-aws
+    needs: build-prod-aws
     runs-on: ubuntu-latest
     steps:
       
