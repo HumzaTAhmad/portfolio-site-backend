@@ -61,10 +61,17 @@ jobs:
       
       - name: Get API Gateway URL
         id: get_url
-        run: echo "::set-output name=api_url::$(terraform output -raw api_gateway_stage_url)"
+        run: |
+          API_URL=$(terraform output -raw api_gateway_stage_url)
+          echo "api_url=$API_URL" >> $GITHUB_ENV
+          echo "api_url=$API_URL" > api_url.txt
       
-      - name: Debug API Gateway URL Output
-        run: echo "The captured API Gateway URL is ${{ steps.get_url.outputs.api_url }}"
+      - name: Debug API URL
+        run: cat api_url.txt
+      
+      - name: Echo API URL
+        run: echo "API URL is set to $API_URL"
+      
       
         
       
@@ -100,12 +107,10 @@ jobs:
       - name: Install cypress
         run: npm install -g cypress
       
-      - name: Use API URL
+      - name: Use API URL from Previous Job
         run: |
-          echo "API_URL=${{ needs.build-dev-aws.outputs.api_url }}" >> $GITHUB_ENV
-      
-      - name: Echo API URL
-        run: echo "API_URL is set to ${{ needs.build-dev-aws.outputs.api_url }}"  
+          echo "API URL from previous job is ${{ needs.deploy.outputs.api_url }}"
+       
       
       - name: Run Cypress tests
         run: npx cypress run
