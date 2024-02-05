@@ -61,7 +61,8 @@ jobs:
         id: get_url
         run: |
           echo "HELLOOO1"
-          API_URL=$(terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*' | sed 's/::.*//')
+          API_URL=$(terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*' | sed 's/::.*//' | head -n 1)
+          echo "API URL is set to $API_URL"
           echo "HELLLOOO2"
       
       
