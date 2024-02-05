@@ -2,6 +2,7 @@
 
 describe('Lambda Function Test', () => {
   it('increments the visit counter', () => {
+    console.log("HELLLLOOOOO")
     console.log(Cypress.env('API_URL'))
     const url = Cypress.env('API_URL');
 
