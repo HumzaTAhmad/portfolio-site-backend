@@ -106,9 +106,7 @@ jobs:
         run: echo "API_URL is set to ${{ needs.build-dev-aws.outputs.api_url }}"  
       
       - name: Run Cypress tests
-        run: npx cypress run
-        env:
-          API_URL: ${{ needs.build-dev-aws.outputs.api_url }}
+        run: npx cypress run --env API_URL=${{ needs.build-dev-aws.outputs.api_url }}
 
       
       - name: Terraform Init
