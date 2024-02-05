@@ -2,8 +2,6 @@
 
 describe('Lambda Function Test', () => {
   it('increments the visit counter', () => {
-    Cypress.log("HELLLLOOOOO")
-    Cypress.log('API_URL')
     const url = Cypress.env('API_URL');
 
     // First PUT request
