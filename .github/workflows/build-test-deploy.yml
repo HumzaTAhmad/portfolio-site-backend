@@ -62,7 +62,8 @@ jobs:
       - name: Get API Gateway URL
         id: get_url
         run: |
-          API_URL=$(terraform output -raw api_gateway_stage_url)
+          API_URL=$(terraform output -raw api_gateway_stage_url | tr -d '\n')
+          echo "Captured API URL: $API_URL"
           echo "api_url=$API_URL" >> $GITHUB_ENV
           echo "api_url=$API_URL" > api_url.txt
       
