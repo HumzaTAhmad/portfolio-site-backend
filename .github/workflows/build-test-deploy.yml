@@ -74,6 +74,8 @@ jobs:
   test-dev:
     needs: build-dev-aws
     runs-on: ubuntu-latest
+    environment:  # Define the environment that requires a manual approval.
+      name: prod
     steps:
 
       - name: Checkout Code
@@ -138,7 +140,7 @@ jobs:
     needs:  build-prod
     runs-on: ubuntu-latest
     outputs:
-      api_gateway_url: ${{ steps.set_output.outputs.api_gateway_url }}
+      api_url_prod: ${{ steps.get_url.outputs.api_url_prod }}
     steps:    
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -173,10 +175,19 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
       
+      - name: Get API Gateway URL
+        id: get_url
+        run: |
+          API_URL_prod=$(terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*' | sed 's/::.*//' | head -n 1)
+          echo "API_URL_prod=$API_URL_prod" >> $GITHUB_ENV
+          echo "api_url_prod=$API_URL_prod" >> $GITHUB_OUTPUT
+      
           
   test-prod:
     needs: build-prod-aws
     runs-on: ubuntu-latest
+    environment:  # Define the environment that requires a manual approval.
+     name: prod
     steps:
       
 
@@ -196,7 +207,7 @@ jobs:
         run: npm install -g cypress 
 
       - name: Run Cypress tests
-        run: npx cypress run
+        run: npx cypress run --env API_URL=${{ needs.build-prod-aws.outputs.api_url_prod }}
       
 
 
