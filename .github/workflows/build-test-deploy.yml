@@ -59,7 +59,8 @@ jobs:
       
       - name: Debug Terraform Output Directly
         run: |
-          terraform output -json api_gateway_stage_url
+          echo "HELLLOOOOOOO"
+          terraform output -raw api_gateway_stage_url
       
       
         
