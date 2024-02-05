@@ -60,7 +60,7 @@ jobs:
       - name: Get API Gateway URL
         id: get_url
         run: |
-          API_URL=$(terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*')
+          API_URL=$(terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*' | sed 's/::.*//')
           echo "API URL is set to $API_URL"
       
       
