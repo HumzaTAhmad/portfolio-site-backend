@@ -5,7 +5,7 @@ describe('Lambda Function Test', () => {
     const url = Cypress.env('API_URL');
     Cypress.log({
       name: 'API_URL',
-      message: url
+      message: "HELLO" + url
     });
     // First PUT request
     cy.request('PUT', url).then((response1) => {
