@@ -22,6 +22,8 @@ jobs:
   build-dev-aws:
     needs:  build-dev
     runs-on: ubuntu-latest
+    outputs:
+      api_url: ${{ steps.get_url.outputs.api_url }}
     steps:    
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -60,12 +62,11 @@ jobs:
       - name: Get API Gateway URL
         id: get_url
         run: |
-          echo "HELLOOO1"
           API_URL=$(terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*' | sed 's/::.*//' | head -n 1)
-          echo "API URL is set to $API_URL"
-          echo "HELLLOOO2"
-      
-      
+          echo "API_URL=$API_URL" >> $GITHUB_ENV
+          echo "api_url=$API_URL" >> $GITHUB_OUTPUT
+        
+        
       
         
       
@@ -101,17 +102,13 @@ jobs:
       - name: Install cypress
         run: npm install -g cypress
       
-      - name: Use API URL
-        run: |
-          echo "API_URL=${{ needs.build-dev-aws.outputs.api_url }}" >> $GITHUB_ENV
-      
       - name: Echo API URL
         run: echo "API_URL is set to ${{ needs.build-dev-aws.outputs.api_url }}"  
       
       - name: Run Cypress tests
         run: npx cypress run
         env:
-          API_URL: ${{ env.API_URL }}
+          API_URL: ${{ needs.build-dev-aws.outputs.api_url }}
 
       
       - name: Terraform Init
