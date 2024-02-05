@@ -22,8 +22,6 @@ jobs:
   build-dev-aws:
     needs:  build-dev
     runs-on: ubuntu-latest
-    outputs:
-      api_url: ${{ steps.get_url.outputs.api_url }}
     steps:    
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -61,18 +59,7 @@ jobs:
       
       - name: Get API Gateway URL
         id: get_url
-        run: |
-          API_URL=$(terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*')
-          echo "api_url=$API_URL" >> $GITHUB_ENV
-          echo "api_url=$API_URL" > api_url.txt
-      
-      - name: Debug API URL
-        run: cat api_url.txt
-      
-      - name: Echo API URL
-        run: echo "API URL is set to $API_URL"
-      
-      
+        run: terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*'
         
       
   
