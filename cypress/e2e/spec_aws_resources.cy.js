@@ -3,8 +3,10 @@
 describe('Lambda Function Test', () => {
   it('increments the visit counter', () => {
     const url = Cypress.env('API_URL');
-    Cypress.log("HIIII")
-    console.log("HIIII")
+    Cypress.log({
+      name: 'API_URL',
+      message: url
+    });
     // First PUT request
     cy.request('PUT', url).then((response1) => {
       expect(response1.status).to.eq(200);
