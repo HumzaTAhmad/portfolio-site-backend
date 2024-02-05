@@ -74,6 +74,8 @@ jobs:
   test-dev:
     needs: build-dev-aws
     runs-on: ubuntu-latest
+    environment:  # Define the environment that requires a manual approval.
+      name: prod
     steps:
 
       - name: Checkout Code
