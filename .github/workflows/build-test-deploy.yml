@@ -96,12 +96,16 @@ jobs:
         run: npm install
         
       - name: Install cypress
-        run: npm install -g cypress 
+        run: npm install -g cypress
+      
+      - name: Test env URL
+        run: echo "API URL: ${{ needs.build-dev-aws.outputs.api_url }}"
+      
 
       - name: Run Cypress tests
         run: npx cypress run
         env:
-          API_URL: ${{ needs.deploy.outputs.api_url }}
+          API_URL: ${{ needs.build-dev-aws.outputs.api_url }}
 
       
       - name: Terraform Init
