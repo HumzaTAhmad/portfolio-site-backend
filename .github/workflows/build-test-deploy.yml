@@ -102,7 +102,9 @@ jobs:
         run: |
           echo "API_URL=${{ needs.terraform-apply.outputs.api_url }}" >> $GITHUB_ENV
       
-
+      - name: Echo API URL
+        run: echo "API_URL is set to $API_URL"  
+      
       - name: Run Cypress tests
         run: npx cypress run
         env:
