@@ -2,7 +2,7 @@
 
 describe('Lambda Function Test', () => {
   it('increments the visit counter', () => {
-    const url = 'https://lxxfx53clc.execute-api.us-east-1.amazonaws.com/v1';
+    const url = Cypress.env('API_URL');
 
     // First PUT request
     cy.request('PUT', url).then((response1) => {
