@@ -138,7 +138,7 @@ jobs:
     needs:  build-prod
     runs-on: ubuntu-latest
     outputs:
-      api_gateway_url: ${{ steps.set_output.outputs.api_gateway_url }}
+      api_url: ${{ steps.get_url.outputs.api_url }}
     steps:    
       - name: Checkout Code
         uses: actions/checkout@v2
@@ -173,6 +173,13 @@ jobs:
       - name: Terraform Apply
         run: terraform apply -auto-approve
       
+      - name: Get API Gateway URL
+        id: get_url
+        run: |
+          API_URL=$(terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*' | sed 's/::.*//' | head -n 1)
+          echo "API_URL=$API_URL" >> $GITHUB_ENV
+          echo "api_url=$API_URL" >> $GITHUB_OUTPUT
+      
           
   test-prod:
     needs: build-prod-aws
@@ -196,7 +203,7 @@ jobs:
         run: npm install -g cypress 
 
       - name: Run Cypress tests
-        run: npx cypress run
+        run: npx cypress run --env API_URL=${{ needs.build-dev-aws.outputs.api_url }}
       
 
 
