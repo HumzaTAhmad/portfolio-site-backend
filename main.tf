@@ -8,7 +8,7 @@ terraform {
     organization = "humza3173"
 
     workspaces {
-      name = "aws-portfolio"
+      name = "resume-backend-test"
     }
   }
 }

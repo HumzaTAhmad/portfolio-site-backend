@@ -165,6 +165,9 @@ jobs:
       
       - name: Terraform Init
         run: terraform init
+      
+      - name: terraform new workspace
+        run: terraform workspace new resume-backend-prod
 
       - name: Terraform Refresh
         run: terraform refresh
