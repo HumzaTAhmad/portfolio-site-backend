@@ -47,8 +47,7 @@ jobs:
           aws-region: us-east-1
       
       - name: Terraform Init
-        run: |
-          terraform init -input=false
+        run: echo '2' | terraform init
 
       - name: terraform set to test workspace
         run: terraform workspace select resume-backend-test
