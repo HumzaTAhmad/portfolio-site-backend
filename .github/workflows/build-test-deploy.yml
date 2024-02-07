@@ -172,9 +172,6 @@ jobs:
 
       - name: Terraform Init
         run: terraform init -input=false
-      
-      - name: terraform set to prod workspace
-        run: terraform workspace select resume-backend-prod
 
       - name: Terraform Refresh
         run: terraform refresh
