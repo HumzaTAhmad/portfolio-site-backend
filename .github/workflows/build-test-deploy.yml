@@ -114,7 +114,7 @@ jobs:
 
       
       - name: Terraform Init
-        run: terraform init
+        run: terraform init -input=false
   
       - name: Terraform destroy
         run: terraform destroy -auto-approve
