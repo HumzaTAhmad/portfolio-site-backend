@@ -8,7 +8,7 @@ terraform {
     organization = "humza3173"
 
     workspaces {
-      name = "resume-backend-test"
+      tags = ["resume-backend"]
     }
   }
 }
@@ -220,6 +220,7 @@ resource "aws_api_gateway_deployment" "my_api_deployment" {
 }
 
 output "api_gateway_stage_url" {
+  depends_on = [ aws_api_gateway_deployment.my_api_deployment ]
   value = aws_api_gateway_deployment.my_api_deployment.invoke_url
 }
 

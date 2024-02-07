@@ -50,6 +50,9 @@ jobs:
         run: |
           terraform init
 
+      - name: terraform set to test workspace
+        run: terraform workspace select resume-backend-test
+
       - name: Terraform Refresh
         run: terraform refresh
       
@@ -166,8 +169,8 @@ jobs:
       - name: Terraform Init
         run: terraform init
       
-      - name: terraform new workspace
-        run: terraform workspace new resume-backend-prod
+      - name: terraform set to prod workspace
+        run: terraform workspace select resume-backend-prod
 
       - name: Terraform Refresh
         run: terraform refresh
