@@ -46,8 +46,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.TEST_AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
       
+      - name: Set Terraform Workspace
+        run: echo "TF_WORKSPACE=resume-backend-test" >> $GITHUB_ENV
+
       - name: Terraform Init
-        run: echo '2' | terraform init
+        run: terraform init -input=false
 
       - name: terraform set to test workspace
         run: terraform workspace select resume-backend-test
