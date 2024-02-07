@@ -48,7 +48,7 @@ jobs:
       
       - name: Terraform Init
         run: |
-          terraform init
+          terraform init -input=false
 
       - name: terraform set to test workspace
         run: terraform workspace select resume-backend-test
