@@ -185,10 +185,10 @@ jobs:
       - name: Get API Gateway URL
         id: get_url
         run: |
-          API_URL_prod=$(terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*' | sed 's/::.*//' | head -n 1)
-          echo "API_URL_prod=$API_URL_prod" >> $GITHUB_ENV
+          API_URL_PROD=$(terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*' | sed 's/::.*//' | head -n 1)
+          echo "API_URL_PROD=$API_URL_prod" >> $GITHUB_ENV
           echo "api_url_prod=$API_URL_prod" >> $GITHUB_OUTPUT
-          echo "API ISISSSSSS $API_URL"
+          echo "API ISISSSSSS $API_URL_PROD"
       
           
   test-prod:
