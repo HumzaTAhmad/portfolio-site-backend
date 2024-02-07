@@ -188,6 +188,7 @@ jobs:
           API_URL_prod=$(terraform output -raw api_gateway_stage_url | grep -o 'https://[^ ]*' | sed 's/::.*//' | head -n 1)
           echo "API_URL_prod=$API_URL_prod" >> $GITHUB_ENV
           echo "api_url_prod=$API_URL_prod" >> $GITHUB_OUTPUT
+          echo "API ISISSSSSS $API_URL"
       
           
   test-prod:
