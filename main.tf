@@ -8,6 +8,7 @@ terraform {
     organization = "humza3173"
 
     workspaces {
+      name = "resume-backend-test"
       tags = ["resume-backend"]
     }
   }
