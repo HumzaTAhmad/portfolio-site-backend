@@ -238,3 +238,68 @@ resource "aws_dynamodb_table" "db_visit_count" {
   }
 }
 
+#--------------------------SNS-----------------------------------------------
+
+resource "aws_sns_topic" "pagerduty-aws" {
+  name = "pagerduty-aws-humza-resume2"
+}
+
+resource "aws_sns_topic_subscription" "user_updates_sqs_target" {
+  depends_on = [ aws_sns_topic.pagerduty-aws ]
+  topic_arn = aws_sns_topic.pagerduty-aws.arn
+  protocol  = "https"
+  endpoint  = "https://events.pagerduty.com/integration/c5f6b2c1e6f44500c0949eb13f39da80/enqueue"
+}
+
+#-----------------------CloudWatch------------------------------------------
+
+resource "aws_cloudwatch_metric_alarm" "update_counter_error_alarm" {
+  alarm_name                = "update_counter_error2"
+  comparison_operator       = "GreaterThanThreshold"
+  evaluation_periods        = 1
+  metric_name               = "Errors"
+  namespace                 = "AWS/Lambda"
+  period                    = 360
+  statistic                 = "Sum"
+  threshold                 = 0
+  alarm_description         = "This metric monitors lambda update visitor function for errors and reports it go pagerduty"
+  alarm_actions             = [aws_sns_topic.pagerduty-aws.arn]
+
+  dimensions = {
+    FunctionName = "update_visits"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "update_counter_duration_alarm" {
+  alarm_name                = "update_counter_duration2"
+  comparison_operator       = "GreaterThanThreshold"
+  evaluation_periods        = 1
+  metric_name               = "Duration"
+  namespace                 = "AWS/Lambda"
+  period                    = 360
+  statistic                 = "Sum"
+  threshold                 = 5000
+  alarm_description         = "This metric monitors lambda update visitor function for how long it takes to execute, and if too long will report it to pagerduty"
+  alarm_actions             = [aws_sns_topic.pagerduty-aws.arn]
+
+  dimensions = {
+    FunctionName = "update_visits"
+  }
+}
+
+resource "aws_cloudwatch_metric_alarm" "update_counter_invocation_alarm" {
+  alarm_name                = "update_counter_invocation2"
+  comparison_operator       = "GreaterThanThreshold"
+  evaluation_periods        = 1
+  metric_name               = "Invocations"
+  namespace                 = "AWS/Lambda"
+  period                    = 10
+  statistic                 = "Sum"
+  threshold                 = 10
+  alarm_description         = "This metric monitors lambda update visitor function for how long it takes to execute, and if too long will report it to pagerduty"
+  alarm_actions             = [aws_sns_topic.pagerduty-aws.arn]
+
+  dimensions = {
+    FunctionName = "update_visits"
+  }
+}
